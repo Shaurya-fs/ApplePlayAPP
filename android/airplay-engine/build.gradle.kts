@@ -44,7 +44,8 @@ val syncEngineKotlin by tasks.registering(Sync::class) {
     into(generatedKotlin)
     doLast {
         val service = generatedKotlin.resolve("io/github/jqssun/airplay/service/AirPlayService.kt")
-        check(!service.readText().contains("MainActivity")) {
+        val leftover = Regex("""import io\.github\.jqssun\.airplay\.MainActivity|MainActivity::class""")
+        check(!leftover.containsMatchIn(service.readText())) {
             "AirPlayService still references MainActivity. The pinned engine version changed; update syncEngineKotlin."
         }
     }
