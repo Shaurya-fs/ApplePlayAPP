@@ -34,9 +34,8 @@ Every push to `main` builds the app on GitHub Actions.
 3. Copy the `.apk` to your Android device and open it. Allow "Install unknown apps"
    when Android asks.
 
-Builds are signed with the key in the `KEYSTORE_BASE64` and `KEYSTORE_PASSWORD`
-repository secrets, so a new version installs over the old one. Without those
-secrets the build still works, but it's signed with a throwaway key.
+Every build is signed with the same key (`android/app/debug.keystore`), so a new
+version installs over the old one and keeps your settings.
 
 ## How it's built
 

@@ -59,7 +59,6 @@ react {
  */
 def enableProguardInReleaseBuilds = false
 
-def releaseKeystore = System.getenv("APPLEPLAY_KEYSTORE_FILE")
 
 /**
  * The preferred build flavor of JavaScriptCore (JSC)
@@ -94,23 +93,14 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
-        // Release builds are signed with your own key when these are set (CI sets
-        // them from GitHub Secrets), so each new version installs over the last one.
-        if (releaseKeystore) {
-            release {
-                storeFile file(releaseKeystore)
-                storePassword System.getenv("APPLEPLAY_KEYSTORE_PASSWORD")
-                keyAlias System.getenv("APPLEPLAY_KEY_ALIAS") ?: "appleplay"
-                keyPassword System.getenv("APPLEPLAY_KEYSTORE_PASSWORD")
-            }
-        }
     }
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
         }
         release {
-            signingConfig releaseKeystore ? signingConfigs.release : signingConfigs.debug
+            // Signed with the debug key kept in this repo, so every build can update the last one.
+            signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }

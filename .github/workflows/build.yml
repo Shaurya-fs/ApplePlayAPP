@@ -54,20 +54,6 @@ jobs:
 
       - run: npm ci
 
-      # Signs every build with the same key so new versions install over old ones.
-      - name: Load the signing key
-        env:
-          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-        run: |
-          if [ -z "$KEYSTORE_BASE64" ] || [ -z "$KEYSTORE_PASSWORD" ]; then
-            echo "::warning::No signing key secrets, so this build uses a throwaway key and won't update an installed copy."
-            exit 0
-          fi
-          echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/appleplay.keystore"
-          echo "APPLEPLAY_KEYSTORE_FILE=$RUNNER_TEMP/appleplay.keystore" >> "$GITHUB_ENV"
-          echo "APPLEPLAY_KEYSTORE_PASSWORD=$KEYSTORE_PASSWORD" >> "$GITHUB_ENV"
-
       - name: Build the APK
         working-directory: android
         run: ./gradlew assembleRelease --stacktrace
@@ -77,10 +63,6 @@ jobs:
           version=$(node -p "require('./package.json').version")
           mkdir -p dist
           cp android/app/build/outputs/apk/release/app-release.apk "dist/ApplePlay-$version.apk"
-
-      - name: Remove the signing key
-        if: always()
-        run: rm -f "$RUNNER_TEMP/appleplay.keystore"
 
       - uses: actions/upload-artifact@v7
         with:
