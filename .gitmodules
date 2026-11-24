@@ -1,0 +1,3 @@
+[submodule "android/vendor/android-airplay-server"]
+	path = android/vendor/android-airplay-server
+	url = https://github.com/jqssun/android-airplay-server.git

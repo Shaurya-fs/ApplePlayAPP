@@ -1,0 +1,45 @@
+package io.github.jqssun.airplay.viewmodel
+
+// Copied unchanged from the engine's MainViewModel.kt, which also holds UI code that
+// this app does not build. The service and audio renderer use these types.
+
+data class AudioDebug(
+    val backlogMs: Int,
+    val tunedCushionMs: Int,
+    val trims: Int,
+    val drops: Int,
+    val silences: Int,
+    val underruns: Int,
+    val xrun: Int,
+    val decodeMeanUs: Int,
+    val decodeMaxUs: Int,
+    val decodeHeld: Int,
+    val decodeErrors: Int,
+)
+
+data class DebugInfo(
+    val videoCodec: String = "",
+    val videoRes: String = "",
+    val videoFps: Int = 0,
+    val videoBitrate: Long = 0,
+    val videoFrames: Long = 0,
+    val droppedFrames: Long = 0,
+    val framePacingJitterUs: Long = 0,
+    val audioCodec: String = "",
+    val serverVolume: Int = 100,
+    val clientVolume: Int = 100,
+    val audio: AudioDebug? = null,
+    val connections: Int = 0,
+) {
+    val bitrateStr: String get() {
+        val kbps = videoBitrate / 1000
+        return if (kbps >= 1000) "${"%.1f".format(kbps / 1000.0)} Mbps" else "$kbps Kbps"
+    }
+    val jitterStr: String get() {
+        return if (framePacingJitterUs >= 1000) {
+            "${"%.1f".format(framePacingJitterUs / 1000.0)} ms"
+        } else {
+            "$framePacingJitterUs us"
+        }
+    }
+}
