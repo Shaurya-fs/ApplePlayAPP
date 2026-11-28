@@ -1,6 +1,6 @@
 {
   "name": "appleplay",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Turn an Android phone, tablet or TV into an AirPlay screen for your Mac, iPhone or iPad.",
   "license": "GPL-3.0-only",
   "private": true,
