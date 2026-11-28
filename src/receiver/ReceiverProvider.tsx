@@ -17,6 +17,7 @@ import {
 } from './receiverClient';
 import { INITIAL_RECEIVER_STATE } from './types';
 import type { CastPhase, ReceiverError, ReceiverState } from './types';
+import type { StreamQuality } from './streamQuality';
 
 type ReceiverContextValue = {
   state: ReceiverState;
@@ -25,6 +26,7 @@ type ReceiverContextValue = {
   /** Turns the receiver on if it is off, and off if it is on. */
   toggle: () => Promise<void>;
   rename: (name: string) => void;
+  setQuality: (quality: StreamQuality) => void;
   openAppSettings: () => void;
 };
 
@@ -93,6 +95,7 @@ export function ReceiverProvider({ children }: PropsWithChildren) {
       error,
       toggle,
       rename: receiverClient.rename,
+      setQuality: receiverClient.setQuality,
       openAppSettings: receiverClient.openAppSettings,
     }),
     [state, starting, error, toggle],

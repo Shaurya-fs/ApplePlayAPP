@@ -1,4 +1,5 @@
 import type { ReceiverSnapshot } from '../native/specs/NativeAirPlayReceiver';
+import { DEFAULT_STREAM_QUALITY } from './streamQuality';
 
 export type PowerState = 'off' | 'on' | 'error';
 
@@ -37,6 +38,7 @@ export const INITIAL_RECEIVER_STATE: ReceiverState = {
   deviceName: '',
   pin: '',
   hasLocalNetworkAccess: true,
+  streamQuality: DEFAULT_STREAM_QUALITY,
 };
 
 const POWER_STATES: readonly PowerState[] = ['off', 'on', 'error'];

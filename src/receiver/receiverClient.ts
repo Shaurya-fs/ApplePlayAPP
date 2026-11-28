@@ -2,6 +2,7 @@ import type { EventSubscription } from 'react-native';
 import NativeAirPlayReceiver from '../native/specs/NativeAirPlayReceiver';
 import { toReceiverState } from './types';
 import type { ReceiverError, ReceiverState } from './types';
+import type { StreamQuality } from './streamQuality';
 
 /** The one place the app talks to the native receiver module. */
 export const receiverClient = {
@@ -18,6 +19,8 @@ export const receiverClient = {
   start: () => NativeAirPlayReceiver.start(),
   stop: () => NativeAirPlayReceiver.stop(),
   rename: (name: string) => NativeAirPlayReceiver.setDeviceName(name),
+  setQuality: (quality: StreamQuality) =>
+    NativeAirPlayReceiver.setStreamQuality(quality),
   setKeepAwake: (on: boolean) => NativeAirPlayReceiver.setKeepAwake(on),
   setImmersive: (on: boolean) => NativeAirPlayReceiver.setImmersive(on),
   openAppSettings: () => NativeAirPlayReceiver.openAppSettings(),

@@ -4,13 +4,14 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { DeviceNameField } from '../components/DeviceNameField';
 import { Notice } from '../components/Notice';
 import { PowerButton } from '../components/PowerButton';
+import { QualityPicker } from '../components/QualityPicker';
 import { StatusMessage } from '../components/StatusMessage';
 import { describePhase } from '../receiver/castPhase';
 import { useReceiver } from '../receiver/ReceiverProvider';
 import { colors, spacing, type } from '../theme/theme';
 
 export function HomeScreen() {
-  const { state, phase, error, toggle, rename, openAppSettings } =
+  const { state, phase, error, toggle, rename, setQuality, openAppSettings } =
     useReceiver();
   const insets = useSafeAreaInsets();
   const copy = describePhase(phase, state.deviceName);
@@ -64,6 +65,12 @@ export function HomeScreen() {
             }
           />
         ) : null}
+
+        <QualityPicker
+          value={state.streamQuality}
+          receiverOn={on}
+          onChange={setQuality}
+        />
 
         <DeviceNameField name={state.deviceName} onRename={rename} />
       </View>

@@ -10,6 +10,7 @@ object ReceiverSnapshot {
     fun from(
         service: AirPlayService?,
         deviceName: String,
+        streamQuality: Int,
         pin: String?,
         hasLocalNetwork: Boolean,
     ): WritableMap = Arguments.createMap().apply {
@@ -25,6 +26,7 @@ object ReceiverSnapshot {
         putString("deviceName", deviceName)
         putString("pin", pin.orEmpty())
         putBoolean("hasLocalNetworkAccess", hasLocalNetwork)
+        putDouble("streamQuality", streamQuality.toDouble())
     }
 
     private fun power(state: ServerState?) = when (state) {

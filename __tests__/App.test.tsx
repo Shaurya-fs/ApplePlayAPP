@@ -110,3 +110,18 @@ test('renaming passes the new name to the receiver', async () => {
   });
   expect(native.setDeviceName).toHaveBeenCalledWith('Living room');
 });
+
+test('picking a stream quality passes it to the receiver', async () => {
+  const tree = await render();
+  await emit({ streamQuality: 720 });
+
+  await ReactTestRenderer.act(async () => {
+    tree.root.findByProps({ testID: 'quality-1080' }).props.onPress();
+  });
+  expect(native.setStreamQuality).toHaveBeenCalledWith(1080);
+
+  await ReactTestRenderer.act(async () => {
+    tree.root.findByProps({ testID: 'quality-720' }).props.onPress();
+  });
+  expect(native.setStreamQuality).toHaveBeenCalledTimes(1);
+});

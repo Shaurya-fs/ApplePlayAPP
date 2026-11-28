@@ -30,10 +30,19 @@ class DeviceSettings(context: Context) {
             Prefs.SERVER_NAME.write(prefs, value.trim().ifBlank { defaultName() }.take(MAX_NAME_LENGTH))
         }
 
+    /** Stream height the Mac is asked for: 720, 1080, 1440 or 2160. Takes effect on the next start. */
+    var streamQuality: Int
+        get() = prefs.getInt(QUALITY_KEY, DEFAULT_QUALITY).takeIf { it in QUALITIES } ?: DEFAULT_QUALITY
+        set(value) {
+            val quality = value.takeIf { it in QUALITIES } ?: DEFAULT_QUALITY
+            prefs.edit { putInt(QUALITY_KEY, quality) }
+            applyResolution(quality)
+        }
+
     /**
      * Left alone, the engine asks the Mac for the panel's full resolution, which on most tablets
-     * is well above 720p. Encoding, sending and decoding that much video over Wi-Fi is what makes
-     * the picture trail behind the cursor, so ask for a 720p-class stream in the panel's shape.
+     * is well above 1080p. Encoding, sending and decoding that much video over Wi-Fi is what makes
+     * the picture trail behind the cursor, so the stream size follows the chosen quality instead.
      */
     private fun applyLowLagTuning() {
         Prefs.LOW_LATENCY.write(prefs, true)
@@ -41,25 +50,34 @@ class DeviceSettings(context: Context) {
         Prefs.KEY_ALLOW_FRAME_DROP.write(prefs, true)
         Prefs.KEY_PRIORITY.write(prefs, true)
         Prefs.SCHEDULED_OUTPUT_BUFFER_RELEASE.write(prefs, false)
+        applyResolution(streamQuality)
+    }
+
+    private fun applyResolution(quality: Int) {
         val (w, h) = appContext.realDisplaySize()
-        Prefs.RESOLUTION.write(prefs, streamSize(w, h))
+        Prefs.RESOLUTION.write(prefs, streamSize(w, h, quality))
     }
 
     private fun defaultName() = "ApplePlay ${Build.MODEL}".take(MAX_NAME_LENGTH)
 
     companion object {
         const val MAX_NAME_LENGTH = 40
+        val QUALITIES = setOf(720, 1080, 1440, 2160)
+        const val DEFAULT_QUALITY = 720
+        private const val QUALITY_KEY = "appleplay_stream_quality"
         private const val TUNING_KEY = "appleplay_tuning_version"
-        private const val TUNING_VERSION = 2
-        private const val MAX_LONG_SIDE = 1280
+        private const val TUNING_VERSION = 3
 
-        /** Landscape size with the long side capped at 1280, keeping the panel's aspect ratio. */
-        fun streamSize(panelW: Int, panelH: Int): String {
-            val long = maxOf(panelW, panelH)
-            val short = minOf(panelW, panelH)
-            if (long <= MAX_LONG_SIDE) return "${long}x$short"
-            val scaled = (short * MAX_LONG_SIDE.toDouble() / long).roundToInt()
-            return "${MAX_LONG_SIDE}x${scaled - scaled % 2}"
+        /**
+         * Landscape stream size for a quality, in the panel's own aspect ratio. The long side is
+         * the 16:9 width of that quality (720p → 1280), so a 16:10 tablet at 720p gets 1280x800.
+         */
+        fun streamSize(panelW: Int, panelH: Int, quality: Int): String {
+            val panelLong = maxOf(panelW, panelH)
+            val panelShort = minOf(panelW, panelH)
+            val long = quality * 16 / 9
+            val short = (panelShort * long.toDouble() / panelLong).roundToInt()
+            return "${long}x${short - short % 2}"
         }
     }
 }

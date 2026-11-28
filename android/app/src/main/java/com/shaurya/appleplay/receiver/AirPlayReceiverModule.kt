@@ -84,6 +84,19 @@ class AirPlayReceiverModule(private val context: ReactApplicationContext) :
         UiThreadUtil.runOnUiThread { publish(ReceiverConnection.current) }
     }
 
+    override fun setStreamQuality(quality: Double) {
+        settings.streamQuality = quality.toInt()
+        UiThreadUtil.runOnUiThread {
+            val svc = ReceiverConnection.current
+            // The engine reads the resolution when it starts, so restart a running receiver.
+            if (svc != null && svc.serverState.value == ServerState.RUNNING) {
+                svc.stopServer()
+                svc.startServer()
+            }
+            publish(svc)
+        }
+    }
+
     override fun setKeepAwake(enabled: Boolean) = window.setKeepAwake(enabled)
 
     override fun setImmersive(enabled: Boolean) = window.setImmersive(enabled)
@@ -117,7 +130,7 @@ class AirPlayReceiverModule(private val context: ReactApplicationContext) :
     private fun publish(service: AirPlayService?) = emitOnSnapshot(snapshot(service))
 
     private fun snapshot(service: AirPlayService?) =
-        ReceiverSnapshot.from(service, settings.deviceName, pin, context.hasLocalNetwork())
+        ReceiverSnapshot.from(service, settings.deviceName, settings.streamQuality, pin, context.hasLocalNetwork())
 
     companion object {
         const val NAME = "AirPlayReceiver"

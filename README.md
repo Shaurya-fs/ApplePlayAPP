@@ -18,6 +18,8 @@ To use the Android screen as extra space instead of a copy, choose
 **Tips**
 
 - Keep both devices on the same Wi-Fi (5 GHz works best).
+- **Stream quality** (720p, 1080p, 1440p, 4K) is on the main screen. 720p is the
+  default and the smoothest; go higher only if your Wi-Fi keeps up.
 - Tap the name under the button to rename the device. The new name shows up the
   next time you turn it on.
 - Android 17 asks for **local network** access the first time. Allow it, or the

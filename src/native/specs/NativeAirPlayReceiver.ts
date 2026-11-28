@@ -20,6 +20,8 @@ export type ReceiverSnapshot = {
   /** Pairing code to type on the Mac, or '' when none is needed. */
   pin: string;
   hasLocalNetworkAccess: boolean;
+  /** Stream height asked of the Mac: 720, 1080, 1440 or 2160. */
+  streamQuality: number;
 };
 
 export interface Spec extends TurboModule {
@@ -28,6 +30,8 @@ export interface Spec extends TurboModule {
   start(): Promise<void>;
   stop(): void;
   setDeviceName(name: string): void;
+  /** Saves the stream height and restarts the receiver if it is on. */
+  setStreamQuality(quality: number): void;
   setKeepAwake(enabled: boolean): void;
   setImmersive(enabled: boolean): void;
   openAppSettings(): void;

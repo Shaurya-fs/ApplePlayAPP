@@ -11,6 +11,7 @@ jest.mock('./src/native/specs/NativeAirPlayReceiver', () => {
     start: jest.fn(() => Promise.resolve()),
     stop: jest.fn(),
     setDeviceName: jest.fn(),
+    setStreamQuality: jest.fn(),
     setKeepAwake: jest.fn(),
     setImmersive: jest.fn(),
     openAppSettings: jest.fn(),
