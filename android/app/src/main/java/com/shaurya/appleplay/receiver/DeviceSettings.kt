@@ -32,8 +32,8 @@ class DeviceSettings(context: Context) {
 
     /**
      * Left alone, the engine asks the Mac for the panel's full resolution, which on most tablets
-     * is well above 1080p. Encoding, sending and decoding that much video over Wi-Fi is what makes
-     * the picture trail behind the cursor, so ask for a 1080p-class stream in the panel's shape.
+     * is well above 720p. Encoding, sending and decoding that much video over Wi-Fi is what makes
+     * the picture trail behind the cursor, so ask for a 720p-class stream in the panel's shape.
      */
     private fun applyLowLagTuning() {
         Prefs.LOW_LATENCY.write(prefs, true)
@@ -50,10 +50,10 @@ class DeviceSettings(context: Context) {
     companion object {
         const val MAX_NAME_LENGTH = 40
         private const val TUNING_KEY = "appleplay_tuning_version"
-        private const val TUNING_VERSION = 1
-        private const val MAX_LONG_SIDE = 1920
+        private const val TUNING_VERSION = 2
+        private const val MAX_LONG_SIDE = 1280
 
-        /** Landscape size with the long side capped at 1920, keeping the panel's aspect ratio. */
+        /** Landscape size with the long side capped at 1280, keeping the panel's aspect ratio. */
         fun streamSize(panelW: Int, panelH: Int): String {
             val long = maxOf(panelW, panelH)
             val short = minOf(panelW, panelH)
